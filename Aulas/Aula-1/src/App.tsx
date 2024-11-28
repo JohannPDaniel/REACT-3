@@ -5,7 +5,7 @@ import AppRoutes from './config/routes/AppRoutes';
 function App() {
 	return (
 		<>
-			<CssBaseline />
+			<CssBaseline  />
 			<GlobalStyle />
 			<AppRoutes />
 		</>
