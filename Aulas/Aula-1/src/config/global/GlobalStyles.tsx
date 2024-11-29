@@ -14,7 +14,8 @@ const styles: Record<string, CSSObject> = {
 	},
 
 	a: {
-        textDecoration: 'none',
+		textDecoration: 'none',
+		color: "black"
 	},
 };
 

@@ -1,28 +1,36 @@
-import { Fingerprint } from '@mui/icons-material';
-import { Box, Typography } from '@mui/material';
+import { Box, Grid2, TextField, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
+import { Fingerprint } from '@mui/icons-material';
 
 export const Home = () => {
 	return (
 		<>
-			<Typography variant='h1'>Olá mundo</Typography>
-			<Button variant='text'>Default Button</Button>
-			<Button variant='contained'>Contained</Button>
-			<Button variant='outlined'>Outlined</Button>
+			<Box
+				component='section'
+				sx={{
+					width: '100%',
+					display: 'flex',
+					flexDirection: 'column',
+					alignItems: 'center',
+					gap: 2,
+					py: 2,
+				}}>
+				<Button variant='text'>Default Button</Button>
+				<Button variant='contained'>Contained</Button>
+				<Button variant='outlined'>Outlined</Button>
 
-			<Button
-				variant='contained'
-				color='success'
-				onClick={() => alert('clicou ...')}>
-				SUCCESS
-			</Button>
-			<Button
-				variant='contained'
-				color='warning'>
-				WARNING
-			</Button>
+				<Button
+					variant='contained'
+					color='success'
+					onClick={() => alert('clicou ...')}>
+					SUCCESS
+				</Button>
+				<Button
+					variant='contained'
+					color='warning'>
+					WARNING
+				</Button>
 
-			<Box sx={{ width: '100%', maxWidth: 500 }}>
 				<Typography variant='h1'>h1. Heading</Typography>
 				<Typography variant='h2'>h2. Heading</Typography>
 				<Typography variant='h3'>h3. Heading</Typography>
@@ -49,8 +57,58 @@ export const Home = () => {
 					consectetur, neque doloribus, cupiditate numquam dignissimos laborum
 					fugiat deleniti? Eum quasi quidem quibusdam.
 				</Typography>
+
+				<TextField
+					variant='filled'
+					label='filled'
+				/>
+				<TextField
+					variant='outlined'
+					label='outlined'
+				/>
+				<TextField
+					variant='standard'
+					label='standard'
+				/>
+				<Fingerprint
+					sx={{ width: 50, height: 'auto' }}
+					color='primary'
+				/>
 			</Box>
-			<Fingerprint fontSize='large' />
+			<Grid2
+				container
+				sx={{ color: 'white' }}>
+				<Grid2
+					size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }}
+					sx={{ background: 'yellow' }}>
+					Coluna 1
+				</Grid2>
+				<Grid2
+					size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }}
+					sx={{ background: 'blue' }}>
+					Coluna 1
+				</Grid2>
+				<Grid2
+					size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }}
+					sx={{ background: 'black' }}>
+					Coluna 1
+				</Grid2>
+				<Grid2
+					size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }}
+					sx={{ background: 'red' }}>
+					Coluna 1
+				</Grid2>
+				<Grid2
+					size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }}
+					sx={{ background: 'orange' }}>
+					Coluna 1
+				</Grid2>
+				<Grid2
+					size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }}
+					sx={{ background: 'purple' }}>
+					Coluna 1
+				</Grid2>
+			</Grid2>
 		</>
 	);
 };
