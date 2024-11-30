@@ -16,9 +16,8 @@
 		"jsx": "react-jsx",
 		"baseUrl": ".",
 		"paths": {
-			"@mui/*": ["node_modules/@mui/*"]
+			"*": ["*"]
 		},
-
 		/* Linting */
 		"strict": true,
 		"noUnusedLocals": true,

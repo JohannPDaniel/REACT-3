@@ -19,7 +19,7 @@ const pages = [
 ];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
-export function Header() {
+export function HeaderMui() {
 	const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
 	const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
@@ -41,7 +41,7 @@ export function Header() {
 	};
 
 	return (
-		<AppBar position='fixed'>
+		<AppBar position='fixed' color="info">
 			<Container maxWidth='lg'>
 				<Toolbar disableGutters>
 					<Avatar
