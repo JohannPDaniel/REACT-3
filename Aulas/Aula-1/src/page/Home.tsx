@@ -1,10 +1,66 @@
 import { Box, Grid2, TextField, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import { Fingerprint } from '@mui/icons-material';
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { decrementar, incrementar, zerar } from "../store/modules/counterSlice";
 
 export const Home = () => {
+	const counterRedux = useAppSelector( ( state ) => state.counter )
+	const dispatch = useAppDispatch()
+
+	const handleIncrementar = () => {
+		dispatch(incrementar())
+	}
+	const handleDecrementar = () => {
+		dispatch(decrementar())
+	}
+	const handleZerar = () => {
+		dispatch(zerar())
+	}
 	return (
 		<>
+			<Grid2
+				container
+				spacing={2}>
+				<Grid2
+					sx={{ textAlign: 'center' }}
+					size={12}>
+					<Typography variant='h6'>Counter: {counterRedux.value}</Typography>
+				</Grid2>
+				<Grid2
+					sx={{ textAlign: 'center' }}
+					size={4}>
+					<Button
+						onClick={handleIncrementar}
+						variant='contained'
+						fullWidth>
+						Incrementar
+					</Button>
+				</Grid2>
+				<Grid2
+					sx={{ textAlign: 'center' }}
+					size={4}>
+					<Button
+						onClick={handleDecrementar}
+						variant='contained'
+						color='secondary'
+						fullWidth>
+						Decrementar
+					</Button>
+				</Grid2>
+				<Grid2
+					sx={{ textAlign: 'center' }}
+					size={4}>
+					<Button
+						onClick={handleZerar}
+						variant='contained'
+						color='warning'
+						fullWidth>
+						Zerar
+					</Button>
+				</Grid2>
+			</Grid2>
+
 			<Box
 				component='section'
 				sx={{

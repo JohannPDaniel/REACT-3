@@ -1,60 +1,110 @@
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
-import { Chip, Grid2 } from '@mui/material';
-import Avatar from '@mui/material/Avatar';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardHeader from '@mui/material/CardHeader';
-import CardMedia from '@mui/material/CardMedia';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
+import { Favorite, Share } from '@mui/icons-material';
+import {
+	Avatar,
+	Box,
+	Card,
+	CardActions,
+	CardContent,
+	CardHeader,
+	CardMedia,
+	Chip,
+	Grid2,
+	IconButton,
+	Rating,
+	Typography,
+} from '@mui/material';
+import { useState } from 'react';
 
-const chips = ['Category 1', 'Category 2', 'Category 3'];
+interface CardPostProps {
+	author: {
+		avatar: string;
+		name: string;
+	};
+	createdAt: Date;
+	title: string;
+	description: string;
+	categories: string[];
+	img: {
+		src: string;
+		alt: string;
+	};
+	rating: number;
+}
 
-export function CardPost() {
+export function CardPost({
+	author,
+	categories,
+	createdAt,
+	description,
+	img,
+	rating,
+	title,
+}: CardPostProps) {
+	const [like, setLike] = useState(false);
+
+	const toggleLike = () => {
+		setLike((prev) => !prev);
+	};
+
+	const handleShared = () => {
+		alert(`Shared ${window.location.href}/${title}`);
+	};
 	return (
-		<Card>
+		<Card sx={{ minHeight: '100%' }}>
 			<CardHeader
 				avatar={
 					<Avatar
-						alt='Remy Sharp'
-						src='https://i.pravatar.cc/150?img=1'
+						alt={`Image do ${author.name}`}
+						src={author.avatar}
 					/>
 				}
-				title='Shrimp and Chorizo Paella'
-				subheader='September 14, 2016'
+				title={author.name}
+				subheader={createdAt.toLocaleDateString('pt-Br')}
 			/>
 			<CardMedia
 				component='img'
 				height='194'
-				image='https://fastly.picsum.photos/id/237/500/300.jpg?hmac=31zB7Ceyovr2h1qoOGeI6Pg8iB8wDymSCLEasQlnHIE'
-				alt='Paella dish'
+				image={img.src}
+				alt={img.alt}
 			/>
-			<CardContent>
+			<CardContent sx={{ minHeight: 235 }}>
 				<Grid2
 					container
 					mb={2}
 					spacing={1}>
-					{chips.map((chip, index) => (
+					{categories.map((cat, index) => (
 						<Grid2 key={index}>
 							<Chip
-								label={chip}
+								label={cat}
 								size='small'
 							/>
 						</Grid2>
 					))}
 				</Grid2>
-				<Typography variant='h6'>Title</Typography>
-				<Typography variant='body2'>Descrição</Typography>
+				<Typography variant='h6'>{title}</Typography>
+				<Typography variant='body2'>{description}</Typography>
 			</CardContent>
-			<CardActions disableSpacing>
-				<IconButton aria-label='add to favorites'>
-					<FavoriteIcon />
-				</IconButton>
-				<IconButton aria-label='share'>
-					<ShareIcon />
-				</IconButton>
+			<CardActions
+				disableSpacing
+				sx={{ display: 'flex', justifyContent: 'space-between' }}>
+				<Box>
+					<IconButton
+						onClick={toggleLike}
+						aria-label='add to favorites'>
+						<Favorite color={like ? 'error' : 'action'} />
+					</IconButton>
+					<IconButton
+						onClick={handleShared}
+						aria-label='share'>
+						<Share />
+					</IconButton>
+				</Box>
+				<Rating
+					name='half-rating'
+					defaultValue={rating}
+					precision={0.5}
+					readOnly
+				/>
 			</CardActions>
 		</Card>
 	);

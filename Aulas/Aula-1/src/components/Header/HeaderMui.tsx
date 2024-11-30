@@ -12,6 +12,7 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useAppSelector } from "../../store/hooks";
 
 const pages = [
 	{ label: 'Home', to: '/' },
@@ -24,6 +25,8 @@ export function HeaderMui() {
 	const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
 	const { pathname } = useLocation();
+
+	const counterRedux = useAppSelector((st) => st.counter)
 
 	const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorElNav(event.currentTarget);
@@ -41,7 +44,9 @@ export function HeaderMui() {
 	};
 
 	return (
-		<AppBar position='fixed' color="info">
+		<AppBar
+			position='fixed'
+			color='info'>
 			<Container maxWidth='lg'>
 				<Toolbar disableGutters>
 					<Avatar
@@ -90,7 +95,7 @@ export function HeaderMui() {
 									<Link
 										to={page.to}
 										style={{
-											textAlign: 'center'
+											textAlign: 'center',
 										}}>
 										{page.label}
 									</Link>
@@ -133,6 +138,9 @@ export function HeaderMui() {
 							</Link>
 						))}
 					</Box>
+
+					<Typography variant="h6" sx={{mr: 2}}>{counterRedux.value}</Typography>
+					
 					<Box sx={{ flexGrow: 0 }}>
 						<Tooltip title='Open settings'>
 							<IconButton
