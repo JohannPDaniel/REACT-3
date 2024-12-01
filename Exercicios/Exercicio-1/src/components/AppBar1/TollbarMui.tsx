@@ -1,22 +1,16 @@
-import AdbIcon from '@mui/icons-material/Adb';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Toolbar from '@mui/material/Toolbar';
-import * as React from 'react';
-import { TooltipMui } from './TooltipMui';
-import { TypographyMui } from './TypographyMui';
+import { Adb } from '@mui/icons-material';
+import { Box, Button, Toolbar } from '@mui/material';
+import { useState } from 'react';
 import { IconButtonMui } from './IconButtonMui';
 import { MenuMui } from './MenuMui';
+import { TooltipMui } from './TooltipMui';
+import { TypographyMui } from './TypographyMui';
 
 const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Dashboard'];
 export function ToolbarMui() {
-	const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-		null
-	);
-	const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-		null
-	);
+	const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+	const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
 	const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorElNav(event.currentTarget);
@@ -35,7 +29,7 @@ export function ToolbarMui() {
 
 	return (
 		<Toolbar disableGutters>
-			<AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+			<Adb sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
 			<TypographyMui
 				flexgrowMui={0}
 				xsMui='none'
@@ -56,7 +50,7 @@ export function ToolbarMui() {
 					pageSettings={pages}
 				/>
 			</Box>
-			<AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+			<Adb sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
 			<TypographyMui
 				flexgrowMui={1}
 				xsMui='flex'
