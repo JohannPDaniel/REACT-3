@@ -1,4 +1,10 @@
-import { styled, TableCell, tableCellClasses, TableHead, TableRow } from "@mui/material";
+import {
+	styled,
+	TableCell,
+	tableCellClasses,
+	TableHead,
+	TableRow,
+} from '@mui/material';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
 	[`&.${tableCellClasses.head}`]: {
@@ -10,17 +16,20 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 	},
 }));
 
+const theader = ['Id', 'Tipo', 'Descrição', 'valor', 'Ações'];
+
 export const TableHeadMui = () => {
 	return (
 		<TableHead>
 			<TableRow>
-				<StyledTableCell>Dessert (100g serving)</StyledTableCell>
-				<StyledTableCell align='right'>Calories</StyledTableCell>
-				<StyledTableCell align='right'>Fat&nbsp;(g)</StyledTableCell>
-				<StyledTableCell align='right'>Carbs&nbsp;(g)</StyledTableCell>
-				<StyledTableCell align='right'>Protein&nbsp;(g)</StyledTableCell>
+				{theader.map((th, index) => (
+					<StyledTableCell
+						key={index}
+						align='center'>
+						{th}
+					</StyledTableCell>
+				))}
 			</TableRow>
 		</TableHead>
 	);
 };
-

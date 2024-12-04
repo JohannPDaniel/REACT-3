@@ -2,15 +2,20 @@ import {
 	Box,
 	Button,
 	FormControl,
-	MenuItem,
 	Modal,
-	Select,
+	SelectChangeEvent,
 	TextField,
 } from '@mui/material';
+import { useRef } from 'react';
+import { FormControlMui } from './FormControlMui';
+import { Transaction } from '../../config/types/Transaction';
 
 interface ModalMuiProps {
 	isOpen?: boolean;
 	onClose?: () => void;
+	onChange?: (event: SelectChangeEvent<string>) => void;
+	select?: string;
+	onSubmit?: (transaction: Transaction) => void;
 }
 
 const style = {
@@ -28,7 +33,32 @@ const style = {
 	gap: 2,
 };
 
-export function ModalMui({ isOpen, onClose }: ModalMuiProps) {
+export function ModalMui({
+	isOpen,
+	onClose,
+	onChange,
+	select,
+	onSubmit,
+}: ModalMuiProps) {
+	const formRef = useRef<HTMLFormElement>(null);
+
+	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+
+		const data: Transaction = {
+			id: Date.now(),
+			type: e.currentTarget['select-value'].value as 'entrada' | 'saída',
+			value: parseFloat(e.currentTarget.valor.value),
+			description: e.currentTarget.description.value,
+		};
+
+		onSubmit?.(data);
+
+		formRef.current?.reset();
+
+		onClose?.();
+	};
+
 	return (
 		<Modal
 			keepMounted
@@ -38,24 +68,28 @@ export function ModalMui({ isOpen, onClose }: ModalMuiProps) {
 			aria-describedby='keep-mounted-modal-description'>
 			<FormControl
 				sx={style}
+				component='form'
+				onSubmit={handleSubmit}
+				ref={formRef}
 				fullWidth>
 				<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-					<Select
-						labelId='demo-simple-select-label'
-						id='demo-simple-select'
-						// value={age}
-						
-						label='Age' >
-						<MenuItem value="" disabled>Escolha um opção</MenuItem>
-						<MenuItem value="entrada">Entrada</MenuItem>
-						<MenuItem value="saída">Saída</MenuItem>
-					</Select>
+					<FormControlMui
+						select={select}
+						onChange={onChange}
+					/>
 					<TextField
 						type='number'
 						fullWidth
 						label='Valor'
 						placeholder='0,00'
-						name='value'
+						name='valor'
+						slotProps={{
+							input: {
+								inputProps: {
+									step: 0.01
+								}, 
+							},
+						}}
 					/>
 					<TextField
 						type='text'
@@ -69,14 +103,15 @@ export function ModalMui({ isOpen, onClose }: ModalMuiProps) {
 					<Button
 						type='reset'
 						color='error'
-						variant='contained'>
-						cancelar
+						variant='contained'
+						onClick={onClose}>
+						Cancelar
 					</Button>
 					<Button
 						type='submit'
 						color='success'
 						variant='contained'>
-						registrar
+						Registrar
 					</Button>
 				</Box>
 			</FormControl>
