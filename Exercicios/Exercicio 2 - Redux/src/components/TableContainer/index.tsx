@@ -1,7 +1,7 @@
 import { Paper, Table, TableContainer } from '@mui/material';
+import { useAppSelector } from '../../store/hooks';
 import { TableBodyMui } from '../TableBody';
 import { TableHeadMui } from '../TableHead';
-import { useAppSelector } from '../../store/hooks'; 
 
 export const TableContainerMui = () => {
 	const { transactions, filterType } = useAppSelector(

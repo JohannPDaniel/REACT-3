@@ -4,12 +4,12 @@ import { useState } from 'react';
 import { FormControlMui } from '../components/Modal/FormControlMui';
 import { ModalMui } from '../components/Modal/ModalMui';
 import { TableContainerMui } from '../components/TableContainer';
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { setFilterType } from "../store/modules/userLogged/userLoggedSlice";
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { setFilterType } from '../store/modules/userLogged/userLoggedSlice';
 
 export function Home() {
-	const [ open, setOpen ] = useState( false );
-	const [ select, setSelect ] = useState<"entrada" | "saída" | "">( "" )
+	const [open, setOpen] = useState(false);
+	const [select, setSelect] = useState<'entrada' | 'saída' | ''>('');
 	const dispatch = useAppDispatch();
 	const { transactions, filterType } = useAppSelector(
 		(state) => state.transactions
@@ -44,6 +44,20 @@ export function Home() {
 							: totalSaida.toFixed(2)}
 					</Typography>
 
+					{/* <Typography variant='h1'>
+						R${' '}
+						{(() => {
+							switch (filterType) {
+								case 'entrada':
+									return totalEntrada.toFixed(2);
+								case 'saída':
+									return totalSaida.toFixed(2);
+								default:
+									return saldoTotal.toFixed(2);
+							}
+						})()}
+					</Typography> */}
+
 					<Typography
 						variant='h6'
 						mb={1}>
@@ -53,6 +67,21 @@ export function Home() {
 							? `Total de Saídas: R$ ${totalSaida.toFixed(2)}`
 							: `Saldo Total: R$ ${saldoTotal.toFixed(2)}`}
 					</Typography>
+					{/* <Typography
+						variant='h6'
+						mb={1}>
+						{(() => {
+							switch (filterType) {
+								case 'entrada':
+									return `Total de Entradas: R$ ${totalEntrada.toFixed(2)}`;
+								case 'saída':
+									return `Total de Saídas: R$ ${totalSaida.toFixed(2)}`;
+
+								default:
+									return `Saldo Total: R$ ${saldoTotal.toFixed(2)}`;
+							}
+						})()}
+					</Typography> */}
 					<FormControlMui
 						select={filterType}
 						onChange={(e) =>

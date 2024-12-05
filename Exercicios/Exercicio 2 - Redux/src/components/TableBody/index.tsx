@@ -9,9 +9,9 @@ interface TableBodyMuiProps {
 export const TableBodyMui = ({ transaction }: TableBodyMuiProps) => {
 	return (
 		<TableBody>
-			{transaction.map((tran) => (
+			{transaction.map((tran, index) => (
 				<StyledTableRow key={tran.id}>
-					<StyledTableCell align='center'>{tran.id}</StyledTableCell>
+					<StyledTableCell align='center'>{index + 1}</StyledTableCell>
 					<StyledTableCell align='center'>{tran.type}</StyledTableCell>
 					<StyledTableCell align='center'>{tran.description}</StyledTableCell>
 					<StyledTableCell align='center'>{tran.value}</StyledTableCell>
