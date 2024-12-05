@@ -1,28 +1,24 @@
 import { TableBody } from '@mui/material';
-import { StyledTableCell, StyledTableRow } from './files';
 import { Transaction } from '../../config/types/Transaction';
+import { StyledTableCell, StyledTableRow } from './files';
 
-interface TableBodyProps {
-	transaction?: Transaction[];
+interface TableBodyMuiProps {
+	transaction: Transaction[];
 }
 
-export const TableBodyMui = ({ transaction }: TableBodyProps) => {
+export const TableBodyMui = ({ transaction }: TableBodyMuiProps) => {
 	return (
 		<TableBody>
-			{transaction?.map((trans, index) => (
-				<StyledTableRow key={index}>
-					<StyledTableCell
-						component='th'
-						align='center'
-						scope='row'>
-						{trans.id}
-					</StyledTableCell>
-					<StyledTableCell align='center'>{trans.type}</StyledTableCell>
-					<StyledTableCell align='center'>{trans.description}</StyledTableCell>
-					<StyledTableCell align='center'>{trans.value}</StyledTableCell>
+			{transaction.map((tran) => (
+				<StyledTableRow key={tran.id}>
+					<StyledTableCell align='center'>{tran.id}</StyledTableCell>
+					<StyledTableCell align='center'>{tran.type}</StyledTableCell>
+					<StyledTableCell align='center'>{tran.description}</StyledTableCell>
+					<StyledTableCell align='center'>{tran.value}</StyledTableCell>
 					<StyledTableCell align='center'></StyledTableCell>
 				</StyledTableRow>
-			)) || (
+			))}
+			{transaction.length === 0 && (
 				<StyledTableRow>
 					<StyledTableCell
 						align='center'

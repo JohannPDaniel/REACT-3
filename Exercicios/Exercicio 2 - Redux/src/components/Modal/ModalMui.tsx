@@ -7,15 +7,16 @@ import {
 	TextField,
 } from '@mui/material';
 import { useRef } from 'react';
-import { FormControlMui } from './FormControlMui';
 import { Transaction } from '../../config/types/Transaction';
+import { useAppDispatch } from '../../store/hooks';
+import { addTransaction } from '../../store/modules/userLogged/userLoggedSlice';
+import { FormControlMui } from './FormControlMui';
 
 interface ModalMuiProps {
 	isOpen?: boolean;
 	onClose?: () => void;
-	onChange?: (event: SelectChangeEvent<string>) => void;
 	select?: string;
-	onSubmit?: (transaction: Transaction) => void;
+	onChange: (e: SelectChangeEvent<string>) => void;
 }
 
 const style = {
@@ -33,26 +34,21 @@ const style = {
 	gap: 2,
 };
 
-export function ModalMui({
-	isOpen,
-	onClose,
-	onChange,
-	select,
-	onSubmit,
-}: ModalMuiProps) {
+export function ModalMui({ isOpen, onClose, select, onChange }: ModalMuiProps) {
 	const formRef = useRef<HTMLFormElement>(null);
+	const dispatch = useAppDispatch();
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		const data: Transaction = {
-			id: Date.now(),
+		const newTransaction: Transaction = {
+			id: crypto.randomUUID(),
 			type: e.currentTarget['select-value'].value as 'entrada' | 'saída',
 			value: parseFloat(e.currentTarget.valor.value),
 			description: e.currentTarget.description.value,
 		};
 
-		onSubmit?.(data);
+		dispatch(addTransaction(newTransaction));
 
 		formRef.current?.reset();
 
@@ -75,7 +71,7 @@ export function ModalMui({
 				<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
 					<FormControlMui
 						select={select}
-						onChange={onChange}
+						onChange={ onChange }
 					/>
 					<TextField
 						type='number'
@@ -83,11 +79,12 @@ export function ModalMui({
 						label='Valor'
 						placeholder='0,00'
 						name='valor'
+						required
 						slotProps={{
 							input: {
 								inputProps: {
-									step: 0.01
-								}, 
+									step: 0.01,
+								},
 							},
 						}}
 					/>
@@ -97,6 +94,7 @@ export function ModalMui({
 						label='Descrição'
 						placeholder='Descrição'
 						name='description'
+						required
 					/>
 				</Box>
 				<Box sx={{ display: 'flex', justifyContent: 'end', columnGap: 2 }}>

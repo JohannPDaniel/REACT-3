@@ -1,21 +1,25 @@
 import { Paper, Table, TableContainer } from '@mui/material';
 import { TableBodyMui } from '../TableBody';
 import { TableHeadMui } from '../TableHead';
-import { Transaction } from "../../config/types/Transaction";
+import { useAppSelector } from '../../store/hooks'; 
 
-interface TableContainerMuiProps {
-	transaction?: Transaction[];
-}
+export const TableContainerMui = () => {
+	const { transactions, filterType } = useAppSelector(
+		(state) => state.transactions
+	);
 
+	const filteredTransactions =
+		filterType === ''
+			? transactions
+			: transactions.filter((tran) => tran.type === filterType);
 
-export const TableContainerMui = ({transaction}: TableContainerMuiProps) => {
 	return (
 		<TableContainer component={Paper}>
 			<Table
 				sx={{ minWidth: 700 }}
 				aria-label='customized table'>
 				<TableHeadMui />
-				<TableBodyMui transaction={transaction} />
+				<TableBodyMui transaction={filteredTransactions} />
 			</Table>
 		</TableContainer>
 	);
