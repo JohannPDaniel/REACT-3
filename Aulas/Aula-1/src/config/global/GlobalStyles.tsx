@@ -1,4 +1,4 @@
-import { CSSObject, GlobalStyles } from '@mui/material';
+import { CssBaseline, CSSObject, GlobalStyles } from '@mui/material';
 import '@fontsource/poppins/300.css';
 import '@fontsource/poppins/400.css';
 import '@fontsource/poppins/500.css';
@@ -20,5 +20,10 @@ const styles: Record<string, CSSObject> = {
 };
 
 export function GlobalStyle() {
-	return <GlobalStyles styles={styles} />;
+	return (
+		<>
+			<GlobalStyles styles={ styles } />;
+			<CssBaseline />
+		</>
+	);
 }
