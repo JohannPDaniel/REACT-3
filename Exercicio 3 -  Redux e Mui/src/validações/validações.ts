@@ -50,14 +50,14 @@ export const validatePassword = (
 				continue;
 			}
 
-			if (nextChar - currentChar === 1 || currentChar - nextChar === 1) {
+			if (Math.abs(nextChar - currentChar) === 1) {
 				sequenceCount++;
-				if (sequenceCount >= 2) return true;
 			} else {
 				sequenceCount = 0;
 			}
 		}
-		return false;
+
+		return sequenceCount >= 2;
 	};
 
 	if (password.length < 4) {

@@ -1,77 +1,51 @@
 import { Box, Button, Grid2, TextField } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../store';
-import {
-	resetErrors,
-	setEmailError,
-	setPasswordError,
-	setRepeatPasswordError,
-} from '../store/modules/Errors/ErrorsSlice';
 import { validateEmail, validatePassword } from '../validações/validações';
 import { CreateCount } from './CreateCount';
 import { TitleImage } from './TitleImage';
+import { useState } from 'react';
 
 export const FormSignUp = () => {
-	const dispatch = useDispatch();
 
-	const {
-		emailError,
-		emailMessage,
-		passwordError,
-		passwordMessage,
-		repeatPasswordError,
-		repeatPasswordMessage,
-	} = useSelector((state: RootState) => state.errors);
+const [emailError, setEmailError] = useState<string | null>(null);
+const [passwordError, setPasswordError] = useState<string | null>(null);
+const [repeatPasswordError, setRepeatPasswordError] = useState<string | null>(
+	null
+);
 
-	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
+const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+	event.preventDefault();
 
-		const email = event.currentTarget.email.value;
-		const password = event.currentTarget.password.value;
-		const repeatPassword = event.currentTarget.repeatPassword.value;
+	const email = event.currentTarget.email.value;
+	const password = event.currentTarget.password.value;
+	const repeatPassword = event.currentTarget.repeatPassword.value;
 
-		const emailValidation = validateEmail(email);
-		if (!emailValidation.isValid) {
-			dispatch(
-				setEmailError({
-					error: true,
-					message: emailValidation.errorMessage!,
-				})
-			);
-		} else {
-			dispatch(setEmailError({ error: false, message: '' }));
+	// Validação do email
+	const emailValidation = validateEmail(email);
+	if (!emailValidation.isValid) {
+		setEmailError(emailValidation.errorMessage);
+	} else {
+		setEmailError(null);
+	}
+
+	// Validação de senha
+	const passwordValidation = validatePassword(password, repeatPassword);
+	if (!passwordValidation.isValid) {
+		if (passwordValidation.field === 'password') {
+			setPasswordError(passwordValidation.errorMessage);
+			setRepeatPasswordError(null);
+		} else if (passwordValidation.field === 'repeatPassword') {
+			setRepeatPasswordError(passwordValidation.errorMessage);
+			setPasswordError(null);
 		}
+		return; // Retorna sem enviar o formulário
+	}
 
-		const passwordValidation = validatePassword(password, repeatPassword);
-		if (!passwordValidation.isValid) {
-			if (passwordValidation.field === 'password') {
-				dispatch(
-					setPasswordError({
-						error: true,
-						message: passwordValidation.errorMessage!,
-					})
-				);
-			} else {
-				dispatch(setPasswordError({ error: false, message: '' }));
-			}
+	// Resetando mensagens de erro caso válido
+	setPasswordError(null);
+	setRepeatPasswordError(null);
 
-			if (passwordValidation.field === 'repeatPassword') {
-				dispatch(
-					setRepeatPasswordError({
-						error: true,
-						message: passwordValidation.errorMessage!,
-					})
-				);
-			} else {
-				dispatch(setRepeatPasswordError({ error: false, message: '' }));
-			}
-			return;
-		}
-
-		dispatch(resetErrors());
-
-		console.log('Formulário enviado com sucesso!');
-	};
+	console.log('Formulário enviado com sucesso!');
+};
 
 	return (
 		<Grid2
@@ -99,24 +73,24 @@ export const FormSignUp = () => {
 					label='E-mail'
 					placeholder='E-mail'
 					name='email'
-					error={emailError}
-					helperText={emailMessage}
+					error={!!emailError}
+					helperText={emailError}
 				/>
 				<TextField
 					type='password'
 					label='Password'
 					name='password'
 					placeholder='Password'
-					error={passwordError}
-					helperText={passwordMessage}
+					error={!!passwordError}
+					helperText={passwordError}
 				/>
 				<TextField
 					type='password'
 					label='Repeat password'
 					placeholder='Repeat Password'
 					name='repeatPassword'
-					error={repeatPasswordError}
-					helperText={repeatPasswordMessage}
+					error={!!repeatPasswordError}
+					helperText={repeatPasswordError}
 				/>
 				<Button
 					variant='contained'
