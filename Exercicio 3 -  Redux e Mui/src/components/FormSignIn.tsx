@@ -6,8 +6,8 @@ import {
 	Checkbox,
 	Button,
 } from '@mui/material';
-import { CreateCount } from './createCount';
-import { TitleImage } from "./TitleImage";
+import { TitleImage } from './TitleImage';
+import { CreateCount } from './CreateCount';
 
 export const FormSignIn = () => {
 	return (
@@ -21,7 +21,7 @@ export const FormSignIn = () => {
 				height: 'auto',
 				padding: 8,
 			}}>
-			<TitleImage title="Sign in" />
+			<TitleImage title='Sign in' />
 			<Box
 				component='form'
 				sx={{
