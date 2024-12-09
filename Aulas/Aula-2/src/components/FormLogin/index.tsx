@@ -11,35 +11,93 @@ import {
 	TextField,
 	Typography,
 } from '@mui/material';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../store/hook';
+import { login } from '../../store/modules/userLogged/userLoggedSlice';
+
+interface ErrorField {
+	email?: string;
+	password?: string;
+}
 
 export const FormLogin = () => {
+	const dispatch = useAppDispatch();
+	const userLoggedReducer = useAppSelector((state) => state.userLogged);
+	const navigate = useNavigate();
 	const [showPassword, setShowPassword] = useState(false);
+	const [errors, setErrors] = useState<ErrorField>({
+		email: '',
+		password: '',
+	});
 	function handleImplements() {
 		alert('Not implementeds !!!');
 	}
 
+	function validate(email: string, password: string) {
+		if (!email) {
+			setErrors({ email: 'Email is required !!!' });
+			return;
+		}
+		if (!password) {
+			setErrors({ password: 'Password is required !!!' });
+			return;
+		}
+		setErrors({});
+	}
+
+	function handleLogin(e: React.FormEvent<HTMLFormElement>) {
+		e.preventDefault();
+		const email = e.currentTarget.email.value;
+		const password = e.currentTarget.password.value;
+		const remember = e.currentTarget.remember.checked;
+
+		validate(email, password);
+
+		dispatch(login({ email, password, remember }));
+	}
+
+	useEffect(() => {
+		if (userLoggedReducer.id && !userLoggedReducer.error) {
+			setTimeout(() => {
+				navigate('/home');
+			}, 500);
+		}
+	}, [userLoggedReducer, navigate]);
+
 	return (
 		<Grid2
 			container
+			component='form'
+			onSubmit={handleLogin}
 			spacing={2}>
 			<Grid2 size={12}>
 				<Typography variant='h4'>Sign in</Typography>
 			</Grid2>
 			<Grid2 size={12}>
-				<FormControl fullWidth>
+				<FormControl
+					fullWidth
+					error={!!errors.email}>
 					<FormLabel htmlFor='email'>E-mail</FormLabel>
 					<TextField
 						id='email'
 						placeholder='your@email.com'
 						name='email'
 						type='email'
+						error={!!errors.email || !!userLoggedReducer.error}
+						helperText={errors.email || userLoggedReducer.error}
+						onChange={(e) => {
+							if (e.target.value) {
+								setErrors({ ...errors, email: '' });
+							}
+						}}
 					/>
 				</FormControl>
 			</Grid2>
 			<Grid2 size={12}>
-				<FormControl fullWidth>
+				<FormControl
+					fullWidth
+					error={!!errors.password}>
 					<FormLabel htmlFor='password'>Password</FormLabel>
 					<TextField
 						id='password'
@@ -47,6 +105,13 @@ export const FormLogin = () => {
 						name='password'
 						type={showPassword ? 'text' : 'password'}
 						variant='outlined'
+						error={!!errors.password || !!userLoggedReducer.error}
+						helperText={errors.password || userLoggedReducer.error}
+						onChange={(e) => {
+							if (e.target.value) {
+								setErrors({ ...errors, password: '' });
+							}
+						}}
 						InputProps={{
 							endAdornment: (
 								<InputAdornment position='end'>
@@ -69,12 +134,14 @@ export const FormLogin = () => {
 			<Grid2 size={12}>
 				<FormControlLabel
 					control={<Checkbox />}
+					name='remember'
 					label='Remember me'
 				/>
 			</Grid2>
 			<Grid2 size={12}>
 				<Button
 					variant='contained'
+					type='submit'
 					fullWidth>
 					Sign in
 				</Button>
