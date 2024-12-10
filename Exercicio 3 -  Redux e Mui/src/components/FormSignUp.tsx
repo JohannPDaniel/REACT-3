@@ -1,51 +1,115 @@
 import { Box, Button, Grid2, TextField } from '@mui/material';
-import { validateEmail, validatePassword } from '../validações/validações';
+import { useEffect, useState } from 'react';
+import { isSequential } from '../validações/validações';
 import { CreateCount } from './CreateCount';
 import { TitleImage } from './TitleImage';
-import { useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../store/hook';
+import { createUser } from '../store/modules/auth/createUser';
+
+interface ErrorField {
+	email?: string;
+	password?: string;
+	repeatPassword?: string;
+}
 
 export const FormSignUp = () => {
-
-const [emailError, setEmailError] = useState<string | null>(null);
-const [passwordError, setPasswordError] = useState<string | null>(null);
-const [repeatPasswordError, setRepeatPasswordError] = useState<string | null>(
-	null
-);
-
-const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-	event.preventDefault();
-
-	const email = event.currentTarget.email.value;
-	const password = event.currentTarget.password.value;
-	const repeatPassword = event.currentTarget.repeatPassword.value;
-
-	// Validação do email
-	const emailValidation = validateEmail(email);
-	if (!emailValidation.isValid) {
-		setEmailError(emailValidation.errorMessage);
-	} else {
-		setEmailError(null);
-	}
-
-	// Validação de senha
-	const passwordValidation = validatePassword(password, repeatPassword);
-	if (!passwordValidation.isValid) {
-		if (passwordValidation.field === 'password') {
-			setPasswordError(passwordValidation.errorMessage);
-			setRepeatPasswordError(null);
-		} else if (passwordValidation.field === 'repeatPassword') {
-			setRepeatPasswordError(passwordValidation.errorMessage);
-			setPasswordError(null);
+	const dispatch = useAppDispatch();
+	const users = useAppSelector((state) => state.authUser.postUsers);
+	const [errors, setErrors] = useState<ErrorField>({
+		email: '',
+		password: '',
+		repeatPassword: '',
+	});
+	function validate(
+		email: string,
+		password: string,
+		repeatPassword: string
+	): boolean {
+		if (!email) {
+			setErrors({ email: 'Email é obrigatório !!!' });
+			return false;
 		}
-		return; // Retorna sem enviar o formulário
+
+		if (!email.includes('@')) {
+			setErrors({ email: 'O Email deve conter (@) para ser válido' });
+			return false;
+		}
+
+		if (!/^[a-zA-Z0-9._%+-]{3,}@/.test(email)) {
+			setErrors({
+				email: 'O Email deve conter pelo menos 3 letras antes do (@)',
+			});
+			return false;
+		}
+
+		if (!/(gmail\.com|hotmail\.com|outlook\.com)$/.test(email)) {
+			setErrors({
+				email:
+					'O Email deve ser de um domínio válido (gmail.com, hotmail.com ou outlook.com)',
+			});
+			return false;
+		}
+
+		if (!email.endsWith('.com')) {
+			setErrors({ email: 'O final do e-mail deve conter (.com)' });
+			return false;
+		}
+
+		if (!password) {
+			setErrors({ password: 'Password é obrigatório !!!' });
+			return false;
+		}
+
+		if (password.length < 4) {
+			setErrors({ password: 'A Senha deve conter mais de 4 caracteres.' });
+			return false;
+		}
+
+		if (isSequential(password)) {
+			setErrors({
+				password:
+					'A senha não pode ser um conjunto de caracteres sequenciais (exemplo: 1123456)',
+			});
+			return false;
+		}
+
+		if (password !== repeatPassword) {
+			setErrors({ repeatPassword: 'As senhas devem ser iguais.' });
+			return false;
+		}
+
+		setErrors({});
+		return true;
 	}
 
-	// Resetando mensagens de erro caso válido
-	setPasswordError(null);
-	setRepeatPasswordError(null);
+	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
 
-	console.log('Formulário enviado com sucesso!');
-};
+		const email = event.currentTarget.email.value;
+		const password = event.currentTarget.password.value;
+		const repeatPassword = event.currentTarget.repeatPassword.value;
+
+		if (!validate(email, password, repeatPassword)) {
+			return;
+		}
+
+		const newUser = {
+			id: crypto.randomUUID(),
+			email,
+		};
+
+		const isEmailExists = users.some((user) => user.email === email);
+
+		if (isEmailExists) {
+			setErrors({ email: 'Este email já está cadastrado.' });
+			return;
+		}
+
+		dispatch(createUser(newUser));
+	};
+	useEffect(() => {
+		console.log(users);
+	}, [users]);
 
 	return (
 		<Grid2
@@ -73,24 +137,29 @@ const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 					label='E-mail'
 					placeholder='E-mail'
 					name='email'
-					error={!!emailError}
-					helperText={emailError}
+					error={!!errors.email}
+					helperText={errors.email}
+					onChange={(e) => {
+						if (e.target.value) {
+							setErrors({ ...errors, email: '' });
+						}
+					}}
 				/>
 				<TextField
 					type='password'
 					label='Password'
 					name='password'
 					placeholder='Password'
-					error={!!passwordError}
-					helperText={passwordError}
+					error={!!errors.password}
+					helperText={errors.password}
 				/>
 				<TextField
 					type='password'
 					label='Repeat password'
 					placeholder='Repeat Password'
 					name='repeatPassword'
-					error={!!repeatPasswordError}
-					helperText={repeatPasswordError}
+					error={!!errors.repeatPassword}
+					helperText={errors.repeatPassword}
 				/>
 				<Button
 					variant='contained'
