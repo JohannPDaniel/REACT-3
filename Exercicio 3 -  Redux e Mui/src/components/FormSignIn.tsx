@@ -1,15 +1,62 @@
 import {
-	Grid2,
 	Box,
-	TextField,
-	FormControlLabel,
-	Checkbox,
 	Button,
+	Checkbox,
+	FormControlLabel,
+	Grid2,
+	TextField,
 } from '@mui/material';
-import { TitleImage } from './TitleImage';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ErrorField } from '../config/types/ErrorField';
+import { useAppDispatch, useAppSelector } from '../store/hook';
+import { login, resetSuccess } from '../store/modules/auth/usersSlice';
 import { CreateCount } from './CreateCount';
+import { TitleImage } from './TitleImage';
 
 export const FormSignIn = () => {
+	const [errors, setErrors] = useState<ErrorField>({
+		email: '',
+		password: '',
+	});
+
+	const dispatch = useAppDispatch();
+	const authUser = useAppSelector((state) => state.authUser);
+	const navigate = useNavigate();
+
+	function validate(email: string, password: string) {
+		if (!email) {
+			setErrors({ email: 'Email é obrigatório !!!' });
+			return;
+		}
+		if (!password) {
+			setErrors({ password: 'Password é obrigatório !!!' });
+			return;
+		}
+		setErrors({});
+	}
+
+	const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+
+		const email = e.currentTarget.email.value;
+		const password = e.currentTarget.password.value;
+
+		validate(email, password);
+		if (errors.email || errors.password) {
+			return;
+		}
+
+		dispatch(login({ email, password }));
+	};
+
+	useEffect(() => {
+		if (authUser.success) {
+			dispatch(resetSuccess());
+			navigate('/home');
+		}
+	}, [authUser, navigate, dispatch]);
+
 	return (
 		<Grid2
 			size={{ xs: 12, sm: 6, md: 5, lg: 4 }}
@@ -24,6 +71,7 @@ export const FormSignIn = () => {
 			<TitleImage title='Sign in' />
 			<Box
 				component='form'
+				onSubmit={handleLogin}
 				sx={{
 					width: '100%',
 					display: 'flex',
@@ -33,15 +81,27 @@ export const FormSignIn = () => {
 				<TextField
 					type='email'
 					label='E-mail'
+					name='email'
 					placeholder='E-mail'
+					error={!!errors.email}
+					helperText={errors.email}
+					onChange={(e) => {
+						if (e.target.value) {
+							setErrors({ ...errors, email: '' });
+						}
+					}}
 				/>
 				<TextField
 					type='password'
 					label='Password'
+					name='password'
 					placeholder='Password'
+					error={!!errors.password}
+					helperText={errors.password}
 				/>
 				<FormControlLabel
 					value='rememberMe'
+					name='remember'
 					control={<Checkbox />}
 					label='Remember me'
 					labelPlacement='end'

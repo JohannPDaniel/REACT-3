@@ -1,25 +1,23 @@
 import { Box, Button, Grid2, TextField } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ErrorField } from '../config/types/ErrorField';
+import { useAppDispatch, useAppSelector } from '../store/hook';
+import { postUser, resetSuccess } from '../store/modules/auth/usersSlice';
 import { isSequential } from '../validações/validações';
 import { CreateCount } from './CreateCount';
 import { TitleImage } from './TitleImage';
-import { useAppDispatch, useAppSelector } from '../store/hook';
-import { createUser } from '../store/modules/auth/createUser';
-
-interface ErrorField {
-	email?: string;
-	password?: string;
-	repeatPassword?: string;
-}
 
 export const FormSignUp = () => {
 	const dispatch = useAppDispatch();
-	const users = useAppSelector((state) => state.authUser.postUsers);
+	const authUsers = useAppSelector((state) => state.authUser);
+	const navigate = useNavigate();
 	const [errors, setErrors] = useState<ErrorField>({
 		email: '',
 		password: '',
 		repeatPassword: '',
 	});
+
 	function validate(
 		email: string,
 		password: string,
@@ -47,11 +45,6 @@ export const FormSignUp = () => {
 				email:
 					'O Email deve ser de um domínio válido (gmail.com, hotmail.com ou outlook.com)',
 			});
-			return false;
-		}
-
-		if (!email.endsWith('.com')) {
-			setErrors({ email: 'O final do e-mail deve conter (.com)' });
 			return false;
 		}
 
@@ -96,20 +89,27 @@ export const FormSignUp = () => {
 		const newUser = {
 			id: crypto.randomUUID(),
 			email,
+			password,
 		};
 
-		const isEmailExists = users.some((user) => user.email === email);
+		const isEmailExists = authUsers.postUsers.some(
+			(user) => user.email === email
+		);
 
 		if (isEmailExists) {
 			setErrors({ email: 'Este email já está cadastrado.' });
 			return;
 		}
 
-		dispatch(createUser(newUser));
+		dispatch(postUser(newUser));
 	};
+
 	useEffect(() => {
-		console.log(users);
-	}, [users]);
+		if (authUsers.success) {
+			dispatch(resetSuccess());
+			navigate('/');
+		}
+	}, [authUsers, navigate, dispatch]);
 
 	return (
 		<Grid2
