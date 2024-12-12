@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
 	Box,
 	Button,
@@ -10,9 +11,9 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ErrorField } from '../config/types/ErrorField';
 import { useAppDispatch, useAppSelector } from '../store/hook';
-import { login, resetSuccess } from '../store/modules/auth/usersSlice';
 import { CreateCount } from './CreateCount';
 import { TitleImage } from './TitleImage';
+import { login, toggleRemember } from '../store/modules/auth/authSlice';
 
 export const FormSignIn = () => {
 	const [errors, setErrors] = useState<ErrorField>({
@@ -21,7 +22,7 @@ export const FormSignIn = () => {
 	});
 
 	const dispatch = useAppDispatch();
-	const authUser = useAppSelector((state) => state.authUser);
+	const authUser = useAppSelector((state) => state.authReducer);
 	const navigate = useNavigate();
 
 	function validate(email: string, password: string) {
@@ -41,22 +42,25 @@ export const FormSignIn = () => {
 
 		const email = e.currentTarget.email.value;
 		const password = e.currentTarget.password.value;
+		const remember = e.currentTarget.remember.checked;
 
 		validate(email, password);
 		if (errors.email || errors.password) {
 			return;
 		}
 
-		dispatch(login({ email, password }));
+		dispatch(login({ email, password, remember }));
 	};
 
+	const handleRemember = (_: any, checked: boolean) => {
+		dispatch(toggleRemember(checked));
+	};
 	useEffect(() => {
-		if (authUser.success) {
-			dispatch(resetSuccess());
+		if (authUser.isLogged) {
+			console.log('Usuário logado!');
 			navigate('/home');
 		}
-	}, [authUser, navigate, dispatch]);
-
+	}, [authUser.isLogged, navigate]);
 	return (
 		<Grid2
 			size={{ xs: 12, sm: 6, md: 5, lg: 4 }}
@@ -105,6 +109,7 @@ export const FormSignIn = () => {
 					control={<Checkbox />}
 					label='Remember me'
 					labelPlacement='end'
+					onChange={handleRemember}
 				/>
 				<Button
 					variant='contained'

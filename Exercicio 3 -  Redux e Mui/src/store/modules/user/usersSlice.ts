@@ -1,29 +1,24 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { user } from "../../../config/db/user.db";
 
 interface InitialUser {
 	id: string;
-	email: string;
-	password?: string;
-	remember?: boolean;
-}
-
-interface LoginRequest {
 	email: string;
 	password: string;
 }
 
 interface InitialState {
 	postUsers: InitialUser[]; 
-	success: boolean
+	isLogged: boolean;
 }
 
 const initialState: InitialState = {
 	postUsers: [],
-	success: false
+	isLogged: false
 };
 
 const userSlice = createSlice({
-	name: 'authUser',
+	name: 'userSlice',
 	initialState,
 	reducers: {
 		postUser(state, action: PayloadAction<InitialUser>) {
@@ -37,25 +32,17 @@ const userSlice = createSlice({
 			}
 
 			state.postUsers.push({ id, email, password });
-			state.success = true
+			user.push({ id, email, password });
+			state.isLogged = true
 			return state
 		},
-		login(state, action: PayloadAction<LoginRequest>) {
-			const { email, password } = action.payload;
-			const userFound = state.postUsers.find(
-				(user) => user.email === email && user.password === password
-			);
-			if (!userFound) {
-				return {...state, success: false};
-			}
-			return {...state, success: true}
-		},
+
 		resetSuccess(state) {
-			state.success = false
+			state.isLogged = false
 			return state
 		}
 	},
 });
 
-export const { postUser, login, resetSuccess } = userSlice.actions;
+export const { postUser, resetSuccess } = userSlice.actions;
 export const usersReducer = userSlice.reducer;

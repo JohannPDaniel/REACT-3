@@ -3,77 +3,20 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ErrorField } from '../config/types/ErrorField';
 import { useAppDispatch, useAppSelector } from '../store/hook';
-import { postUser, resetSuccess } from '../store/modules/auth/usersSlice';
-import { isSequential } from '../validações/validações';
+import { postUser, resetSuccess } from '../store/modules/user/usersSlice';
+import { validate } from '../validations/validate';
 import { CreateCount } from './CreateCount';
 import { TitleImage } from './TitleImage';
 
 export const FormSignUp = () => {
 	const dispatch = useAppDispatch();
-	const authUsers = useAppSelector((state) => state.authUser);
+	const authUsers = useAppSelector((state) => state.user);
 	const navigate = useNavigate();
 	const [errors, setErrors] = useState<ErrorField>({
 		email: '',
 		password: '',
 		repeatPassword: '',
 	});
-
-	function validate(
-		email: string,
-		password: string,
-		repeatPassword: string
-	): boolean {
-		if (!email) {
-			setErrors({ email: 'Email é obrigatório !!!' });
-			return false;
-		}
-
-		if (!email.includes('@')) {
-			setErrors({ email: 'O Email deve conter (@) para ser válido' });
-			return false;
-		}
-
-		if (!/^[a-zA-Z0-9._%+-]{3,}@/.test(email)) {
-			setErrors({
-				email: 'O Email deve conter pelo menos 3 letras antes do (@)',
-			});
-			return false;
-		}
-
-		if (!/(gmail\.com|hotmail\.com|outlook\.com)$/.test(email)) {
-			setErrors({
-				email:
-					'O Email deve ser de um domínio válido (gmail.com, hotmail.com ou outlook.com)',
-			});
-			return false;
-		}
-
-		if (!password) {
-			setErrors({ password: 'Password é obrigatório !!!' });
-			return false;
-		}
-
-		if (password.length < 4) {
-			setErrors({ password: 'A Senha deve conter mais de 4 caracteres.' });
-			return false;
-		}
-
-		if (isSequential(password)) {
-			setErrors({
-				password:
-					'A senha não pode ser um conjunto de caracteres sequenciais (exemplo: 1123456)',
-			});
-			return false;
-		}
-
-		if (password !== repeatPassword) {
-			setErrors({ repeatPassword: 'As senhas devem ser iguais.' });
-			return false;
-		}
-
-		setErrors({});
-		return true;
-	}
 
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
@@ -82,7 +25,7 @@ export const FormSignUp = () => {
 		const password = event.currentTarget.password.value;
 		const repeatPassword = event.currentTarget.repeatPassword.value;
 
-		if (!validate(email, password, repeatPassword)) {
+		if (!validate(email, password, repeatPassword, setErrors)) {
 			return;
 		}
 
@@ -105,8 +48,8 @@ export const FormSignUp = () => {
 	};
 
 	useEffect(() => {
-		if (authUsers.success) {
-			dispatch(resetSuccess());
+		if ( authUsers.isLogged) {
+			dispatch(resetSuccess())
 			navigate('/');
 		}
 	}, [authUsers, navigate, dispatch]);
