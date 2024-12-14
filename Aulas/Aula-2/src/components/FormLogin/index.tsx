@@ -12,9 +12,9 @@ import {
 	Typography,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../store/hook';
-import { login } from '../../store/modules/userLogged/userLoggedSlice';
+import { Link, useNavigate, } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { login } from "../../store/modules/userLogged/userLoggedSlice";
 
 interface ErrorField {
 	email?: string;
@@ -23,8 +23,8 @@ interface ErrorField {
 
 export const FormLogin = () => {
 	const dispatch = useAppDispatch();
-	const userLoggedReducer = useAppSelector((state) => state.userLogged);
-	const navigate = useNavigate();
+	const userLoggedRedux = useAppSelector((state) => state.userLogged)
+	const navigate = useNavigate()
 	const [showPassword, setShowPassword] = useState(false);
 	const [errors, setErrors] = useState<ErrorField>({
 		email: '',
@@ -58,12 +58,12 @@ export const FormLogin = () => {
 	}
 
 	useEffect(() => {
-		if (userLoggedReducer.id && !userLoggedReducer.error) {
+		if (userLoggedRedux.id && !userLoggedRedux.errors) {
 			setTimeout(() => {
 				navigate('/home');
 			}, 500);
 		}
-	}, [userLoggedReducer, navigate]);
+	}, [userLoggedRedux, navigate]);
 
 	return (
 		<Grid2
@@ -84,8 +84,8 @@ export const FormLogin = () => {
 						placeholder='your@email.com'
 						name='email'
 						type='email'
-						error={!!errors.email || !!userLoggedReducer.error}
-						helperText={errors.email || userLoggedReducer.error}
+						error={!!errors.email || !!userLoggedRedux.errors}
+						helperText={errors.email || userLoggedRedux.errors}
 						onChange={(e) => {
 							if (e.target.value) {
 								setErrors({ ...errors, email: '' });
@@ -105,8 +105,8 @@ export const FormLogin = () => {
 						name='password'
 						type={showPassword ? 'text' : 'password'}
 						variant='outlined'
-						error={!!errors.password || !!userLoggedReducer.error}
-						helperText={errors.password || userLoggedReducer.error}
+						error={!!errors.password || !!userLoggedRedux.errors}
+						helperText={errors.password || userLoggedRedux.errors}
 						onChange={(e) => {
 							if (e.target.value) {
 								setErrors({ ...errors, password: '' });

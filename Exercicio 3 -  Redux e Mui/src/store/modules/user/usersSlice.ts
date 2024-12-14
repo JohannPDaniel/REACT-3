@@ -9,12 +9,12 @@ interface InitialUser {
 
 interface InitialState {
 	postUsers: InitialUser[]; 
-	isLogged: boolean;
+	success: boolean;
 }
 
 const initialState: InitialState = {
 	postUsers: [],
-	isLogged: false
+	success: false
 };
 
 const userSlice = createSlice({
@@ -33,12 +33,12 @@ const userSlice = createSlice({
 
 			state.postUsers.push({ id, email, password });
 			user.push({ id, email, password });
-			state.isLogged = true
+			state.success = true
 			return state
 		},
 
 		resetSuccess(state) {
-			state.isLogged = false
+			state.success = false
 			return state
 		}
 	},

@@ -1,18 +1,17 @@
 import { Box, Typography } from '@mui/material';
-import { useAppDispatch, useAppSelector } from '../store/hook';
+import { useAppSelector } from '../store/hook';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 
 export const Home = () => {
-	const dispatch = useAppDispatch()
-	const auth = useAppSelector((state) => state.authReducer);
+	const auth = useAppSelector((state) => state.auth);
 	const navigate = useNavigate();
 
 	useEffect(() => {
 		if (!auth.isLogged) {
 			navigate('/');
 		}
-	}, [navigate, auth.isLogged, dispatch]);
+	}, [auth, navigate]);
 	return (
 		<Box
 			sx={{

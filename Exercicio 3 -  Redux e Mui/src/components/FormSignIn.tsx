@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
 	Box,
 	Button,
@@ -11,9 +10,9 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ErrorField } from '../config/types/ErrorField';
 import { useAppDispatch, useAppSelector } from '../store/hook';
+import { login, setRemember } from '../store/modules/auth/authSlice';
 import { CreateCount } from './CreateCount';
 import { TitleImage } from './TitleImage';
-import { login, toggleRemember } from '../store/modules/auth/authSlice';
 
 export const FormSignIn = () => {
 	const [errors, setErrors] = useState<ErrorField>({
@@ -22,7 +21,7 @@ export const FormSignIn = () => {
 	});
 
 	const dispatch = useAppDispatch();
-	const authUser = useAppSelector((state) => state.authReducer);
+	const auth = useAppSelector((state) => state.auth);
 	const navigate = useNavigate();
 
 	function validate(email: string, password: string) {
@@ -45,6 +44,7 @@ export const FormSignIn = () => {
 		const remember = e.currentTarget.remember.checked;
 
 		validate(email, password);
+
 		if (errors.email || errors.password) {
 			return;
 		}
@@ -52,15 +52,12 @@ export const FormSignIn = () => {
 		dispatch(login({ email, password, remember }));
 	};
 
-	const handleRemember = (_: any, checked: boolean) => {
-		dispatch(toggleRemember(checked));
-	};
 	useEffect(() => {
-		if (authUser.isLogged) {
-			console.log('Usuário logado!');
+		if (auth.isLogged) {
 			navigate('/home');
 		}
-	}, [authUser.isLogged, navigate]);
+	}, [auth, navigate]);
+
 	return (
 		<Grid2
 			size={{ xs: 12, sm: 6, md: 5, lg: 4 }}
@@ -104,12 +101,15 @@ export const FormSignIn = () => {
 					helperText={errors.password}
 				/>
 				<FormControlLabel
-					value='rememberMe'
+					value={auth.remember}
 					name='remember'
 					control={<Checkbox />}
 					label='Remember me'
 					labelPlacement='end'
-					onChange={handleRemember}
+					onChange={(event) => {
+						const target = event.target as HTMLInputElement;
+						dispatch(setRemember(target.checked));
+					}}
 				/>
 				<Button
 					variant='contained'

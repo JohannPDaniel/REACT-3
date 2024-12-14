@@ -18,11 +18,12 @@ const initialState: InitialState = {
 };
 
 const authSlice = createSlice({
-	name: 'authUser',
+	name: 'auth',
 	initialState,
 	reducers: {
 		login(state, action: PayloadAction<LoginRequest>) {
 			const { email, password, remember } = action.payload;
+
 			const userFound = user.find(
 				(user) => user.email === email && user.password === password
 			);
@@ -35,16 +36,17 @@ const authSlice = createSlice({
 
 			state.isLogged = true;
 			state.remember = remember;
+
 		},
-		toggleRemember(state, action: PayloadAction<boolean>) {
-			state.remember = action.payload;
-		},
-		resetIsLogged(state) {
+		logout(state) {
 			state.isLogged = false;
 			state.remember = false;
+		},
+		setRemember(state, action: PayloadAction<boolean>) {
+			state.remember = action.payload;
 		},
 	},
 });
 
-export const { login, toggleRemember, resetIsLogged } = authSlice.actions;
+export const { login, logout, setRemember } = authSlice.actions;
 export const authReducer = authSlice.reducer;

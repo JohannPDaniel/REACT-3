@@ -1,32 +1,45 @@
-import { Button, Typography } from '@mui/material';
-import { useAppDispatch, useAppSelector } from '../store/hook';
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { logout } from "../store/modules/userLogged/userLoggedSlice";
+import { Grid2, Typography, Divider } from "@mui/material";
+import { useState } from "react";
+// import { useNavigate } from "react-router-dom";
+import { FloatButton } from "../components/FloatButton";
+import { TableAssessments } from "../components/TableAssessments";
+import { UpsertModal } from "../components/UpsertModal";
+import { useAppSelector } from "../store/hooks";
+// import { useAppSelector } from "../store/hook";
 
-export const Home = () => {
-    const userLoggedRedux = useAppSelector( ( state ) => state.userLogged );
-    const dispatch = useAppDispatch()
-    const navigate = useNavigate();
-    function handleLogout () {
-        dispatch(logout())
-    }
-    
-	useEffect(() => {
-		if (!userLoggedRedux.id) {
-			navigate('/');
-		}
-	}, [userLoggedRedux, navigate]);
+export function Home() {
+
+	const [openModal, setOpenModal] = useState(false);
+	const userLoggedRedux = useAppSelector((state) => state.userLogged)
 
 	return (
-		<>
-			<Typography variant='h2'>Welcome, {userLoggedRedux.name}</Typography>
-			<Button
-				variant='contained'
-				color='error'
-				onClick={handleLogout}>
-				Logout
-			</Button>
-		</>
+		<Grid2
+			container
+			spacing={2}>
+			<Grid2 size={12}>
+				<Typography variant='h6'>
+					Wellcome,{' '}
+					<Typography
+						component='span'
+						variant='h6'
+						sx={{ fontWeight: 'bold' }}>
+						{userLoggedRedux.name}
+					</Typography>
+				</Typography>
+			</Grid2>
+			<Grid2 size={12}>
+				<Divider />
+			</Grid2>
+			<Grid2 size={12}>
+				<TableAssessments />
+			</Grid2>
+
+			<FloatButton onClick={() => setOpenModal(true)} />
+
+			<UpsertModal
+				open={openModal}
+				onClose={() => setOpenModal(false)}
+			/>
+		</Grid2>
 	);
-};
+}

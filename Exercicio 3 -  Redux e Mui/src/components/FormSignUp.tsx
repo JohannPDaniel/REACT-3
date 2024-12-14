@@ -7,6 +7,7 @@ import { postUser, resetSuccess } from '../store/modules/user/usersSlice';
 import { validate } from '../validations/validate';
 import { CreateCount } from './CreateCount';
 import { TitleImage } from './TitleImage';
+import { user } from "../config/db/user.db";
 
 export const FormSignUp = () => {
 	const dispatch = useAppDispatch();
@@ -35,7 +36,7 @@ export const FormSignUp = () => {
 			password,
 		};
 
-		const isEmailExists = authUsers.postUsers.some(
+		const isEmailExists = user.some(
 			(user) => user.email === email
 		);
 
@@ -48,7 +49,7 @@ export const FormSignUp = () => {
 	};
 
 	useEffect(() => {
-		if ( authUsers.isLogged) {
+		if (authUsers.success) {
 			dispatch(resetSuccess())
 			navigate('/');
 		}
