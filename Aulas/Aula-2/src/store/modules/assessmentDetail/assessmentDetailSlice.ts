@@ -10,7 +10,7 @@ const initialState: Assessment = {
   title: "",
   description: "",
   grade: 0,
-  createdAt: new Date(),
+  createdAt: new Date().toDateString(),
 };
 
 const assessmentDetailSlice = createSlice({

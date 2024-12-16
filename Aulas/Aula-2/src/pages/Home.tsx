@@ -1,16 +1,28 @@
-import { Grid2, Typography, Divider } from "@mui/material";
-import { useState } from "react";
+import { Divider, Grid2, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
 // import { useNavigate } from "react-router-dom";
-import { FloatButton } from "../components/FloatButton";
-import { TableAssessments } from "../components/TableAssessments";
-import { UpsertModal } from "../components/UpsertModal";
-import { useAppSelector } from "../store/hooks";
+import { useNavigate } from 'react-router-dom';
+import { FloatButton } from '../components/FloatButton';
+import { TableAssessments } from '../components/TableAssessments';
+import { UpsertModal } from '../components/UpsertModal';
+import { useAppSelector } from '../store/hooks';
 // import { useAppSelector } from "../store/hook";
 
 export function Home() {
+	const navigate = useNavigate();
+	const userLoggedRedux = useAppSelector((state) => state.userLogged);
+	const { editAssessments } = useAppSelector( ( state ) => state.assessments );
+	const [ openModal, setOpenModal ] = useState( false );
+	
+	useEffect(() => {
+		if (!userLoggedRedux) {
+			navigate('/');
+		}
+	}, [userLoggedRedux, navigate]);
 
-	const [openModal, setOpenModal] = useState(false);
-	const userLoggedRedux = useAppSelector((state) => state.userLogged)
+	useEffect(() => {
+		setOpenModal(!!editAssessments.id)
+	}, [editAssessments]);
 
 	return (
 		<Grid2
