@@ -32,7 +32,7 @@ const menuItems = [
 
 export default function AppBar() {
 	const dispatch = useAppDispatch();
-  const auth = useAppSelector((state) => state.userLogged)
+	const { student } = useAppSelector((state) => state.userLogged);
 	const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
 	const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -65,7 +65,7 @@ export default function AppBar() {
 									variant='body1'
 									color='white'
 									mr={1}>
-									{auth.name}
+									{student.name}
 								</Typography>
 								<Avatar
 									alt='Remy Sharp'

@@ -8,15 +8,15 @@ import { useAppSelector } from '../store/hooks';
 
 export function Home() {
 	const navigate = useNavigate();
-	const userLoggedRedux = useAppSelector((state) => state.userLogged);
-	const assessmentDetailRedux = useAppSelector( ( state ) => state.assessmentDetail);
+	const {student, token} = useAppSelector((state) => state.userLogged);
+	// const assessmentDetailRedux = useAppSelector( ( state ) => state.assessmentDetail);
 	const [ openModal, setOpenModal ] = useState( false );
 	
 	useEffect(() => {
-		if (!userLoggedRedux) {
+		if (!token) {
 			navigate('/');
 		}
-	}, [userLoggedRedux, navigate]);
+	}, [token, navigate]);
 
 	// useEffect(() => {
 	// 	setOpenModal(!!assessmentDetailRedux.id);
@@ -33,7 +33,7 @@ export function Home() {
 						component='span'
 						variant='h6'
 						sx={{ fontWeight: 'bold' }}>
-						{userLoggedRedux.name}
+						{student.name}
 					</Typography>
 				</Typography>
 			</Grid2>
