@@ -12,13 +12,12 @@ import storage from 'redux-persist/lib/storage';
 // Transformação para verificar a persistência baseada em "remember"
 const persistTransform: Transform<any, any> = createTransform(
 	(inboundState, key) => {
-		// Persistir apenas se "remember" estiver true
 		if (key === 'auth' && !inboundState.remember) {
-			return { ...inboundState, isLogged: false }; // Resetar o login ao persistir
+			return { ...inboundState, isLogged: false }; 
 		}
-		return inboundState; // Persistir normalmente
+		return inboundState; 
 	},
-	(outboundState) => outboundState // Sem alterações ao reidratar
+	(outboundState) => outboundState 
 );
 const persistConfig = {
 	key: 'root',
