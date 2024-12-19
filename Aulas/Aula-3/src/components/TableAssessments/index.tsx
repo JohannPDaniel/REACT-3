@@ -1,38 +1,44 @@
 import { Delete, Edit } from '@mui/icons-material';
-import { IconButton } from '@mui/material';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { Assessment } from '../../utils/types/assessment';
 import {
-	deleteAssessment,
-} from '../../store/modules/assessments/assessmentsSlice';
-import { setAssessentDetail } from "../../store/modules/assessmentDetail/assessmentDetailSlice";
-import { useNavigate } from "react-router-dom";
+	IconButton,
+	Table,
+	TableBody,
+	TableCell,
+	TableContainer,
+	TableHead,
+	TableRow,
+} from '@mui/material';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { setAssessentDetail } from '../../store/modules/assessmentDetail/assessmentDetailSlice';
+import { findAllAssessmentsAsyncThunk } from '../../store/modules/assessments/assessment.action';
+import { Assessment } from '../../utils/types/assessment';
 
 export function TableAssessments() {
 	const dispatch = useAppDispatch();
-	const navigate = useNavigate()
-
-	// assessments => data ([])
-	const { data } = useAppSelector((state) => state.assessments);
+	const assessmentAsyncThunk = useAppSelector((state) => state.assessments);
 
 	function handleEdit(asssessment: Assessment) {
-		dispatch( setAssessentDetail( asssessment ) );
-		setTimeout(() => {
-			navigate("/detail")
-		}, 500);
+		dispatch(setAssessentDetail(asssessment));
+		// setTimeout(() => {
+		// 	navigate('/detail');
+		// }, 500);
 	}
 
 	function handleDelete(id: string) {
 		console.log({ id });
-		dispatch(deleteAssessment(id));
+		// dispatch(deleteAssessment(id));
 	}
 
+	useEffect(() => {
+		if (assessmentAsyncThunk.success) {
+			dispatch(findAllAssessmentsAsyncThunk());
+		}
+	}, [dispatch, assessmentAsyncThunk.success]);
+
+	useEffect(() => {
+		dispatch(findAllAssessmentsAsyncThunk());
+	}, [dispatch]);
 	return (
 		<TableContainer>
 			<Table
@@ -69,7 +75,7 @@ export function TableAssessments() {
 					</TableRow>
 				</TableHead>
 				<TableBody>
-					{data.map((row, index) => (
+					{assessmentAsyncThunk.assessments.map((row, index) => (
 						<TableRow
 							key={row.id}
 							sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>

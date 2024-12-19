@@ -12,15 +12,14 @@ import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { resetAssessmentDetail } from '../../store/modules/assessmentDetail/assessmentDetailSlice';
 import {
-	createAssessment,
 	resetSuccess,
-	updateAssessment,
 } from '../../store/modules/assessments/assessmentsSlice';
 import {
 	FieldsErrors,
 	validateFormAssessment,
 } from '../../utils/validators/assessment.validator';
 import { style } from './styles';
+import { createAssessmentAsyncThunk } from "../../store/modules/assessments/assessment.action";
 
 interface UpsertModalProps {
 	open: boolean;
@@ -29,7 +28,10 @@ interface UpsertModalProps {
 
 export function UpsertModal({ open, onClose }: UpsertModalProps) {
 	const dispatch = useAppDispatch();
-	const { errors, success } = useAppSelector((state) => state.assessments);
+	const userLoggedReducer = useAppSelector((state) => state.userLogged);
+	const assessmentRedux = useAppSelector(
+		(state) => state.assessments
+	);
 	const assessmentDetailRedux = useAppSelector(
 		({ assessmentDetail }) => assessmentDetail
 	);
@@ -59,14 +61,20 @@ export function UpsertModal({ open, onClose }: UpsertModalProps) {
 		setFieldsErrors({} as FieldsErrors);
 
 		// Dados para criar ou editar
-		const data = { title, grade, description };
+		const data = {
+			title,
+			grade,
+			description,
+			studentId: userLoggedReducer.student.id,
+		};
 
 		if (assessmentDetailRedux.id) {
 			// Modo de edição
-			dispatch(updateAssessment({ id: assessmentDetailRedux.id, ...data }));
+			// dispatch(updateAssessment({ id: assessmentDetailRedux.id, ...data }));
 		} else {
 			// Modo de criação
-			dispatch(createAssessment(data));
+			// dispatch(createAssessment(data));
+			dispatch( createAssessmentAsyncThunk( data ) );
 		}
 	}
 
@@ -77,15 +85,17 @@ export function UpsertModal({ open, onClose }: UpsertModalProps) {
 	}
 
 	useEffect(() => {
-		if (!errors && success) {
-			handleClose();
+		if (assessmentRedux.success && assessmentRedux.message) {
+			setTimeout(() => {
+				onClose();
+			}, 1000);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [errors, success]);
+	}, [assessmentRedux]);
 
 	return (
 		<Modal
-			open={open}// !!assessmentDetailRedux.id
+			open={open} // !!assessmentDetailRedux.id
 			onClose={handleClose}
 			aria-labelledby='modal-modal-title'
 			aria-describedby='modal-modal-description'>
@@ -185,8 +195,9 @@ export function UpsertModal({ open, onClose }: UpsertModalProps) {
 							<Button
 								variant='contained'
 								fullWidth
+								disabled={assessmentRedux.loading}
 								type='submit'>
-								Submit
+								{assessmentRedux.loading ? 'Awaiting...' : 'Submit'}
 							</Button>
 						</Grid2>
 					</Grid2>

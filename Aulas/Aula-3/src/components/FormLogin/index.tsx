@@ -15,6 +15,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { loginAsyncThunk } from '../../store/modules/userLogged/userLoggedSlice';
+import { showAlert } from '../../store/modules/Alert/Alert';
 
 interface ErrorField {
 	email?: string;
@@ -31,7 +32,12 @@ export const FormLogin = () => {
 		password: '',
 	});
 	function handleImplements() {
-		alert('Not implementeds !!!');
+		dispatch(
+			showAlert({
+				type: 'warning',
+				message: 'Not implemented',
+			})
+		);
 	}
 
 	function validate(email: string, password: string) {

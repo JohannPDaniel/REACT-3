@@ -5,12 +5,12 @@ import { Assessment } from "../../../utils/types/assessment";
 // Valor inicial
 // Ações
 
-const initialState: Assessment = {
+const initialState: Omit<Assessment, "studentId"> = {
   id: "",
   title: "",
   description: "",
   grade: 0,
-  createdAt: new Date().toDateString(),
+  createdAt: new Date().toLocaleDateString(),
 };
 
 const assessmentDetailSlice = createSlice({

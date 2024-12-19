@@ -2,14 +2,20 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ResponseAPI } from '../../../configs/services/api.service';
 import { loginService } from '../../../configs/services/auth.service';
 import { LoginRequest } from '../../../utils/types/auth';
+import { showAlert } from '../Alert/Alert';
 export const loginAsyncThunk = createAsyncThunk(
 	'userLogged/loginAsyncThunk',
-	async (data: LoginRequest, { rejectWithValue }) => {
+	async (data: LoginRequest, { dispatch }) => {
 		const { email, password, remember } = data;
 		const response = await loginService({ email, password });
 
 		if (!response.success) {
-			return rejectWithValue(response.message);
+			dispatch(
+				showAlert({
+					type: 'error',
+					message: response.message,
+				})
+			);
 		}
 
 		const responseWithRemember = {
@@ -25,6 +31,12 @@ export const loginAsyncThunk = createAsyncThunk(
 				},
 			},
 		};
+		dispatch(
+			showAlert({
+				type: 'success',
+				message: response.message,
+			})
+		);
 
 		return responseWithRemember;
 	}

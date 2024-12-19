@@ -10,9 +10,16 @@ import {
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { FormLogin } from '../components/FormLogin';
+import { SnackBarAlert } from '../components/SnackBarAlert';
+import { useAppDispatch } from "../store/hooks";
+import { showAlert } from "../store/modules/Alert/Alert";
 export const Login = () => {
-    function handleImplements () {
-        alert("Not implementeds !!!")
+	const dispatch = useAppDispatch()
+	function handleImplements() {
+		dispatch( showAlert( {
+			type: "warning",
+			message: "Not implemented"
+		}))
 	}
 	return (
 		<Box
@@ -77,6 +84,8 @@ export const Login = () => {
 					</Grid2>
 				</Card>
 			</Container>
+
+			<SnackBarAlert />
 		</Box>
 	);
 };

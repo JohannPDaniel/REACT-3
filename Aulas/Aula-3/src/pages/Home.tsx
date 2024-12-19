@@ -5,22 +5,30 @@ import { FloatButton } from '../components/FloatButton';
 import { TableAssessments } from '../components/TableAssessments';
 import { UpsertModal } from '../components/UpsertModal';
 import { useAppSelector } from '../store/hooks';
+import { SnackBarAlert } from '../components/SnackBarAlert';
 
 export function Home() {
 	const navigate = useNavigate();
-	const {student, token} = useAppSelector((state) => state.userLogged);
-	// const assessmentDetailRedux = useAppSelector( ( state ) => state.assessmentDetail);
-	const [ openModal, setOpenModal ] = useState( false );
-	
+	const { student, token } = useAppSelector((state) => state.userLogged);
+	const assessmentDetailRedux = useAppSelector( ( state ) => state.assessmentDetail);
+	const [openModal, setOpenModal] = useState(false);
+
 	useEffect(() => {
 		if (!token) {
 			navigate('/');
 		}
 	}, [token, navigate]);
 
+	useEffect(() => {
+		setOpenModal(!!assessmentDetailRedux.id);
+	}, [assessmentDetailRedux]);
+
 	// useEffect(() => {
-	// 	setOpenModal(!!assessmentDetailRedux.id);
-	// }, [assessmentDetailRedux]);
+	// 	if (success) {
+	// 		setOpenModal(false);
+	// 		dispatch(resetSuccess());
+	// 	}
+	// }, []);
 
 	return (
 		<Grid2
@@ -28,7 +36,7 @@ export function Home() {
 			spacing={2}>
 			<Grid2 size={12}>
 				<Typography variant='h6'>
-					Welcome,{' '}
+					Welcome, {' '}
 					<Typography
 						component='span'
 						variant='h6'
@@ -50,6 +58,8 @@ export function Home() {
 				open={openModal}
 				onClose={() => setOpenModal(false)}
 			/>
+
+			<SnackBarAlert />
 		</Grid2>
 	);
 }
