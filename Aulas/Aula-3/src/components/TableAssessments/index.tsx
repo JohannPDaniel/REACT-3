@@ -30,15 +30,11 @@ export function TableAssessments() {
 		// dispatch(deleteAssessment(id));
 	}
 
-	useEffect(() => {
-		if (assessmentAsyncThunk.success) {
-			dispatch(findAllAssessmentsAsyncThunk());
-		}
-	}, [dispatch, assessmentAsyncThunk.success]);
 
 	useEffect(() => {
 		dispatch(findAllAssessmentsAsyncThunk());
-	}, [dispatch]);
+	}, [ dispatch ] );
+	
 	return (
 		<TableContainer>
 			<Table
